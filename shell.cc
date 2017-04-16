@@ -80,7 +80,7 @@ spawn(const string &path, const string &args)
 		return -1;
 	}
 	else if (child) {
-		
+		destroy_environ(envp);	
 		return child;
 	} 
 	else {
