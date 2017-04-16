@@ -6,6 +6,6 @@ An interactive commandline shell.
 
 * Run `make`.
 
-# TODO
+## TODO
 
 * Cross-platform support.
