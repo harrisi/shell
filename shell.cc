@@ -10,6 +10,8 @@
 #include <iostream>
 using namespace std;
 
+extern char** environ;
+
 // TODO: Consider adding argument parsing to class.
 class arguments { 
 public:
