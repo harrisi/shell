@@ -5,6 +5,7 @@
 #include <errno.h>
 #include <sys/wait.h>
 
+#include <map>
 #include <string>
 #include <iostream>
 using namespace std;
@@ -23,6 +24,8 @@ private:
 	const int argc_;
 	const char *const *argv_;
 };
+
+// TODO:  Class for environment variables. Encapsulate a map.
 
 // TODO: Consider creating a class to handle environment variables.
 // TODO: Consider moving to C.
