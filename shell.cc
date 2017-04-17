@@ -86,7 +86,7 @@ spawn(const string &path, const string &args)
 	else {
 		if (execve(path.c_str(), argv, envp))
 			// TODO: Use strerror_r.
-			cout << "execv: " << strerror(errno) << std::endl;
+			cout << "execve: " << strerror(errno) << std::endl;
 	}
 	return 0;
 }
