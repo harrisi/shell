@@ -1,6 +1,5 @@
 # TODO: Find a way to add cross-platform support, ideally without using CMake.
 CXX=x86_64-pc-linux-gnu-g++
-# TODO: Figure out why this doesn't expand in the compilation step.
 CXF=-std=c++1z -Wall -Werror -pedantic
 
 SRC=$(wildcard *.cc)
@@ -12,7 +11,7 @@ BIN=shell
 ${BIN}: ${OBJ}	
 	${CXX} -o $@ $^
 
-%.o: %.c
+%.o: %.cc
 	${CXX} ${CXF} -c -o $@ $<
 
 clean:
