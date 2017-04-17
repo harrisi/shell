@@ -26,6 +26,13 @@ private:
 };
 
 // TODO:  Class for environment variables. Encapsulate a map.
+class environment {
+public:
+	environment()
+	{ }
+private:
+};
+
 
 // TODO: Consider creating a class to handle environment variables.
 // TODO: Consider moving to C.
