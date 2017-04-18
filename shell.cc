@@ -25,14 +25,10 @@ private:
 	const char *const *argv_;
 };
 
-// TODO:  Class for environment variables. Encapsulate a map.
-class environment {
-public:
-	environment()
-	{ }
-private:
-};
-
+const string &environment::operator [] (const string &key)
+{
+	return vars[key];
+}
 
 // TODO: Consider creating a class to handle environment variables.
 // TODO: Consider moving to C.
