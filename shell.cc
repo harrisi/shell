@@ -28,7 +28,7 @@ private:
 class environment {
 public:
 	environment()
-	{ vars = map<string, string>(); }
+	{ }
 
 	string &operator [] (const string &key);
 private:
@@ -117,9 +117,10 @@ main(int argc, char *argv[])
 		// TODO: Use strerror_r.
 		cout << "waitpid: " << strerror(errno) << std::endl;
 
-	environment env();
+	environment env;
 
 	env["a"] = "1";
+	cout << env["a"] << std::endl;
 
 	return 0;
 }
