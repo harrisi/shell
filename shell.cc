@@ -25,7 +25,17 @@ private:
 	const char *const *argv_;
 };
 
-const string &environment::operator [] (const string &key)
+class environment {
+public:
+	environment()
+	{ vars = map<string, string>(); }
+
+	string &operator [] (const string &key);
+private:
+	map<string, string> vars;
+};
+
+string &environment::operator [] (const string &key)
 {
 	return vars[key];
 }
@@ -106,6 +116,10 @@ main(int argc, char *argv[])
 	if (waitpid(ls, &status, WUNTRACED) == -1)
 		// TODO: Use strerror_r.
 		cout << "waitpid: " << strerror(errno) << std::endl;
+
+	environment env();
+
+	env["a"] = "1";
 
 	return 0;
 }
