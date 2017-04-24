@@ -1,9 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
 #include <string.h>
+
+#ifdef __unix__
 #include <errno.h>
+#include <unistd.h>
 #include <sys/wait.h>
+#endif
 
 #include <map>
 #include <string>
@@ -81,7 +84,9 @@ destroy_environ(char *const *env)
 
 
 // TODO: Cross-platform support.
+// TODO: Per-platform source files?
 // TODO: Accept a single string?
+#if defined (__unix__) || (defined (__APPLE__) && defined (__MACH__))
 int
 spawn(const string &path, const string &args)
 {
@@ -106,16 +111,33 @@ spawn(const string &path, const string &args)
 	}
 	return 0;
 }
+#endif
+
+#if defined(_WIN32)
+int
+spawn(const string &path, const string &args)
+{
+	return 0;
+}
+#endif
+
+// TODO: Cross-platform support.
+// TODO: Determine which subset of features is shared.
+int
+join(int pid, int *status)
+{
+	return -1;
+}
 
 int 
 main(int argc, char *argv[]) 
 {
-	pid_t ls = spawn("/bin/ls", "");
+	int ls = spawn("/bin/ls", "");
 	int status;
 
-	if (waitpid(ls, &status, WUNTRACED) == -1)
+	if (join(ls, &status) == -1)
 		// TODO: Use strerror_r.
-		cout << "waitpid: " << strerror(errno) << std::endl;
+		cout << "join: " << strerror(errno) << std::endl;
 
 	return 0;
 }
