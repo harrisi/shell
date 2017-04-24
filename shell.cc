@@ -2,10 +2,13 @@
 #include <stdlib.h>
 #include <string.h>
 
-#ifdef __unix__
+#if defined(__unix__) || (defined(__APPLE__) && defined(__MACH__))
 #include <errno.h>
 #include <unistd.h>
 #include <sys/wait.h>
+// TODO: How best to support unicode Windows calls?
+#elif defined(_WIN32)
+#include <windows.h>
 #endif
 
 #include <map>
@@ -29,6 +32,8 @@ private:
 	const char *const *argv_;
 };
 
+// TODO: Read in from OS format, modify, then pack into OS format for process
+// creation.
 class environment {
 public:
 	environment()
@@ -44,9 +49,8 @@ string &environment::operator [] (const string &key)
 	return vars[key];
 }
 
-// TODO: Cross platform environment class?
-// TODO: Consider moving to C.
-
+// TODO: Find a good way to handle the difference in environment variable
+// formats.
 // TODO: Lacking specific information otherwise, the shell environment will be
 // cloned when passed to another process.
 // TODO: Error handling.
@@ -75,10 +79,33 @@ clone_environ()
 #endif
 
 #if defined(_WIN32)
-char *const *
+char const *
 clone_environ()
 {
-	return nullptr;
+	char *env = nullptr;
+	int nenv = 0, tenv = 0;
+	char *penv, *ienv;
+
+	// TODO: This should be copied to allow modification of environment
+	// variables that is not system-wide.
+	penv = GetEnvironmentStrings();
+	ienv = penv;
+	while (*ienv) {
+		nenv++;
+		tenv += strlen(ienv) + 1;
+		ienv = strchr(ienv, '\0') + 1;
+	}
+	// The smallest the environment block can be is length 2; "\0\0". But if the
+	// block is empty then the above loop will terminate before running.
+	if (tenv == 0)
+		tenv = 1;
+	tenv++;
+	
+	env = new char[tenv];
+	memcpy(env, penv, tenv);
+	
+	FreeEnvironmentStrings(penv);
+	return env;
 }
 #endif
 
@@ -97,8 +124,9 @@ destroy_environ(char *const *env)
 
 #if defined(_WIN32)
 void
-destroy_environ(char *const *env)
+destroy_environ(char const *env)
 {
+	delete[] env;
 }
 #endif
 
@@ -148,12 +176,16 @@ join(int pid, int *status)
 	return -1;
 }
 
+// TODO: Consider moving to C.
 int 
 main(int argc, char *argv[]) 
 {
 	int ls = spawn("/bin/ls", "");
 	int status;
 
+	char const *env = clone_environ();
+	destroy_environ(env);
+	
 	if (join(ls, &status) == -1)
 		// TODO: Use strerror_r.
 		cout << "join: " << strerror(errno) << std::endl;
