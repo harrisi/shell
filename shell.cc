@@ -34,8 +34,11 @@ private:
 
 // TODO: Read in from OS format, modify, then pack into OS format for process
 // creation.
+// TODO: If or when moving to C, the best internal format is likely a null
+// terminated array of strings.
 class environment {
 public:
+	// TODO: Should default constructor retrieve environment from OS?
 	environment()
 	{ }
 
