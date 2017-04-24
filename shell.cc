@@ -14,6 +14,7 @@
 using namespace std;
 
 // TODO: Consider adding argument parsing to class.
+// TODO: Consider using gengetopt.
 class arguments { 
 public:
 	arguments(int argc, const char *const argv[])
@@ -43,7 +44,7 @@ string &environment::operator [] (const string &key)
 	return vars[key];
 }
 
-// TODO: Consider creating a class to handle environment variables.
+// TODO: Cross platform environment class?
 // TODO: Consider moving to C.
 
 // TODO: Lacking specific information otherwise, the shell environment will be
@@ -52,6 +53,7 @@ string &environment::operator [] (const string &key)
 // TODO: Determine storage requirements of environment.
 // TODO: Determine a possible replacement for environment variables.
 // TODO: Pass `environ` in explicitly?
+#if defined(__unix__) || (defined(__APPLE__) && defined(__MACH__))
 char *const *
 clone_environ()
 {
@@ -70,7 +72,17 @@ clone_environ()
 
 	return env;
 }
+#endif
 
+#if defined(_WIN32)
+char *const *
+clone_environ()
+{
+	return nullptr;
+}
+#endif
+
+#if defined(__unix__) || (defined(__APPLE__) && defined(__MACH__))
 void
 destroy_environ(char *const *env)
 {
@@ -81,12 +93,19 @@ destroy_environ(char *const *env)
 	}
 	delete[] env;
 }
+#endif
 
+#if defined(_WIN32)
+void
+destroy_environ(char *const *env)
+{
+}
+#endif
 
 // TODO: Cross-platform support.
 // TODO: Per-platform source files?
 // TODO: Accept a single string?
-#if defined (__unix__) || (defined (__APPLE__) && defined (__MACH__))
+#if defined(__unix__) || (defined(__APPLE__) && defined(__MACH__))
 int
 spawn(const string &path, const string &args)
 {
@@ -122,7 +141,7 @@ spawn(const string &path, const string &args)
 #endif
 
 // TODO: Cross-platform support.
-// TODO: Determine which subset of features is shared.
+// TODO: Determine which subset of features are shared.
 int
 join(int pid, int *status)
 {
