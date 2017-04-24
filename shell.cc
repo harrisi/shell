@@ -79,7 +79,7 @@ clone_environ()
 #endif
 
 #if defined(_WIN32)
-char const *
+const char *
 clone_environ()
 {
 	char *env = nullptr;
@@ -183,7 +183,7 @@ main(int argc, char *argv[])
 	int ls = spawn("/bin/ls", "");
 	int status;
 
-	char const *env = clone_environ();
+	const char *env = clone_environ();
 	destroy_environ(env);
 	
 	if (join(ls, &status) == -1)
