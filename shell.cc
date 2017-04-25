@@ -3,12 +3,18 @@
 #include <string.h>
 
 #if defined(__unix__) || (defined(__APPLE__) && defined(__MACH__))
-#include <errno.h>
-#include <unistd.h>
-#include <sys/wait.h>
-// TODO: How best to support unicode Windows calls?
+#	define POSIX
 #elif defined(_WIN32)
-#include <windows.h>
+#	define WINAPI
+#endif
+
+#if defined(POSIX)
+#	include <errno.h>
+#	include <unistd.h>
+#	include <sys/wait.h>
+// TODO: How best to support unicode Windows calls?
+#elif defined(WINAPI)
+#	include <windows.h>
 #endif
 
 #include <map>
@@ -26,7 +32,6 @@ public:
 
 	const char *const *begin() const { return argv_; }
 	const char *const *end() const { return argv_ + argc_; }
-
 private:
 	const int argc_;
 	const char *const *argv_;
@@ -186,8 +191,8 @@ main(int argc, char *argv[])
 	int ls = spawn("/bin/ls", "");
 	int status;
 
-	const char *env = clone_environ();
-	destroy_environ(env);
+	//const char *env = clone_environ();
+	//destroy_environ(env);
 	
 	if (join(ls, &status) == -1)
 		// TODO: Use strerror_r.
