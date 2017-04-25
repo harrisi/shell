@@ -105,6 +105,9 @@ environment::operator [] (const string &key)
 	return vars_[key];
 }
 
+class process {
+};
+
 // TODO: Find a good way to handle the difference in environment variable
 // formats.
 // TODO: Lacking specific information otherwise, the shell environment will be
