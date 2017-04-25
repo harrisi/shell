@@ -41,8 +41,10 @@ private:
 
 #if defined(POSIX)
 typedef char ** environment_t;
+typedef pid_t   process_t;
 #elif defined(WINAPI)
-typedef char *  environment_t;
+typedef char  * environment_t;
+typedef HANDLE  process_t;
 #endif
 
 // TODO: Read in from OS format, modify, then pack into OS format for process
@@ -139,13 +141,53 @@ environment::operator [] (const string &key)
 }
 
 class process {
+public:
 	process(const string &path, const string &args)
 		: path_(path), args_(args)
 	{ }
 
+	int run();
+	
 private:
 	string path_, args_;
+	process_t proc_;
 };
+
+int
+process::run()
+{
+#if defined(POSIX)
+#elif defined(WINAPI)
+	STARTUPINFO si;
+	PROCESS_INFORMATION pi;
+	environment env;
+	environment_t penv;
+	
+	memset(&si, 0, sizeof(si));
+	memset(&pi, 0, sizeof(pi));
+	penv = env.to_environment();
+	
+	// TODO: Save a handle to the process.
+	// TODO: Properly manage security attributes.
+	// TODO: Test that environment is accessible.
+	if (!CreateProcess(
+		NULL,	// No module name.
+		(char *)(path_ + " " + args_).c_str(),
+		NULL,	// Process handle not inheritable.
+		NULL,	// Thread handle not inheritable.
+		FALSE,	// Set handle inheritance to false.
+		0,		// No creation flags.
+		penv,	// Environment.
+		NULL,	// Use parent's starting directory.
+		&si, &pi)) {
+		cout << "CreateProcess" << std::endl;
+		return -1;
+	}
+	
+	// TODO: Implement wait for process, close handles.
+	return 0;
+#endif
+}
 
 // TODO: Find a good way to handle the difference in environment variable
 // formats.
@@ -187,31 +229,12 @@ spawn(const string &path, const string &args)
 }
 #endif
 
-#if defined(_WIN32)
-int
-spawn(const string &path, const string &args)
-{
-	return 0;
-}
-#endif
-
-// TODO: Cross-platform support.
-// TODO: Determine which subset of features are shared.
-int
-join(int pid, int *status)
-{
-	return -1;
-}
-
 // TODO: Consider moving to C.
 int 
 main(int argc, char *argv[]) 
 {
-	//int ls = spawn("/bin/ls", "");
-	//(void)ls;
-
-	environment env;
-	env.to_environment();
+	process p("notepad.exe", "");
+	p.run();
 	
 	return 0;
 }

@@ -4,7 +4,8 @@
 # TODO: Find a way to select compiler based on platform.
 #CXX=x86_64-pc-linux-gnu-g++
 CXX=x86_64-w64-mingw32-g++
-CXF=-std=c++1z -Wall -Werror -pedantic
+# Add -Werror back in.
+CXF=-std=c++1z -Wall -pedantic
 
 SRC=$(wildcard *.cc)
 OBJ=${SRC:.cc=.o}
