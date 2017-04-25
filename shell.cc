@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+// TODO: Add BSDs.
 #if defined(__unix__) || (defined(__APPLE__) && defined(__MACH__))
 #	define POSIX
 #elif defined(_WIN32)
