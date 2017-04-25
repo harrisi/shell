@@ -106,6 +106,12 @@ environment::operator [] (const string &key)
 }
 
 class process {
+	process(const string &path, const string &args)
+		: path_(path), args_(args)
+	{ }
+
+private:
+	string path_, args_;
 };
 
 // TODO: Find a good way to handle the difference in environment variable
