@@ -80,6 +80,20 @@ environment::from_environment()
 		vars_[key] = val;
 	}
 #elif defined(WINAPI)
+	const char *env, *penv, *eq;
+	string key, val;
+	
+	env  = GetEnvironmentStrings();
+	penv = env;
+	while (*penv) {
+		eq  = strchr(penv, '=');
+		key = string(penv, eq - penv);
+		val = string(eq + 1);
+		
+		vars_[key] = val;
+		penv = strchr(penv, '\0') + 1;
+	}
+	FreeEnvironmentStrings((char *)env);
 #endif
 }
 
@@ -96,6 +110,25 @@ environment::to_environment()
 	}
 	return env;
 #elif defined(WINAPI)
+	char *env, *penv;
+	string ent;
+	int tenv = 0;
+	
+	// TODO: Find a better way to do this, if possible.
+	for (const auto &v: vars_)
+		// Size of key, value, '=', and '\0'.
+		tenv += v.first.size() + v.second.size() + 2;
+	// Size of all entries plus '\0'.
+	env  = new char[tenv + 1];
+	penv = env;
+	memset(env, 0, tenv + 1);
+	
+	for (const auto &v: vars_) {
+		ent = v.first + "=" + v.second;
+		memcpy(penv, ent.c_str(), ent.size() + 1);
+		penv += ent.size() + 1;
+	}
+	return env;
 #endif
 }
 
@@ -122,45 +155,6 @@ private:
 // TODO: Determine storage requirements of environment.
 // TODO: Determine a possible replacement for environment variables.
 // TODO: Pass `environ` in explicitly?
-#if defined(_WIN32)
-const char *
-clone_environ()
-{
-	char *env = nullptr;
-	int nenv = 0, tenv = 0;
-	char *penv, *ienv;
-
-	// TODO: This should be copied to allow modification of environment
-	// variables that is not system-wide.
-	penv = GetEnvironmentStrings();
-	ienv = penv;
-	while (*ienv) {
-		nenv++;
-		tenv += strlen(ienv) + 1;
-		ienv = strchr(ienv, '\0') + 1;
-	}
-	// The smallest the environment block can be is length 2; "\0\0". But if the
-	// block is empty then the above loop will terminate before running.
-	if (tenv == 0)
-		tenv = 1;
-	tenv++;
-	
-	env = new char[tenv];
-	memcpy(env, penv, tenv);
-	
-	FreeEnvironmentStrings(penv);
-	return env;
-}
-#endif
-
-#if defined(_WIN32)
-void
-destroy_environ(char const *env)
-{
-	delete[] env;
-}
-#endif
-
 // TODO: Cross-platform support.
 // TODO: Per-platform source files?
 // TODO: Accept a single string?
@@ -213,8 +207,11 @@ join(int pid, int *status)
 int 
 main(int argc, char *argv[]) 
 {
-	int ls = spawn("/bin/ls", "");
-	(void)ls;
+	//int ls = spawn("/bin/ls", "");
+	//(void)ls;
 
+	environment env;
+	env.to_environment();
+	
 	return 0;
 }
