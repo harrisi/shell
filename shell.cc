@@ -161,6 +161,7 @@ int
 process::run()
 {
 #if defined(POSIX)
+	return -1;
 #elif defined(WINAPI)
 	STARTUPINFO si;
 	PROCESS_INFORMATION pi;
