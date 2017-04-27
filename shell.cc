@@ -2,6 +2,10 @@
 #include <stdlib.h>
 #include <string.h>
 
+// TODO: Remove Windows code.
+// TODO: Move to C.
+// TODO: Create interface to console.
+
 // TODO: Add BSDs.
 #if defined(__unix__) || (defined(__APPLE__) && defined(__MACH__))
 #	define POSIX
