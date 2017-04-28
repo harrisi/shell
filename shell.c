@@ -33,6 +33,8 @@ buffer_alloc(size_t size)
 	return b;
 }
 
+// Return NULL if a string is valid UTF-8 data, otherwise, return a pointer to
+// the first malformed sequence.
 uint8_t *
 utf_validate(uint8_t *data)
 {
@@ -68,10 +70,23 @@ utf_validate(uint8_t *data)
 	return NULL;
 }
 
+// Expand all strings to their largest representation.
+uint8_t *
+utf_decompose(uint8_t *data)
+{
+}
+
+// Return the next grapheme cluster.
 uint8_t *
 utf_next(uint8_t *data)
 {
 	return NULL;
+}
+
+// Return the number of vertical columns that the given string occupies.
+size_t
+utf_width(uint8_t *data)
+{
 }
 
 // TODO: Specify rules for `indent`.
