@@ -79,7 +79,7 @@ utf_next(uint8_t *data)
 int
 main(int argc, char *argv[])
 {
-	if (!utf_validate((uint8_t *)""))
+	if (utf_validate((uint8_t *)"κόσμε"))
 		printf("Invalid.\n");
 	else
 		printf("Valid.\n");
