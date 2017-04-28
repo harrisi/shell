@@ -4,13 +4,11 @@
 # TODO: Find a way to select compiler based on platform.
 # TODO: Invoke Cygwin compiler on Windows.
 # TODO: Detect compiler string.
-CXX=x86_64-linux-gnu-g++
-#CXX=x86_64-pc-linux-gnu-g++
-#CXX=x86_64-w64-mingw32-g++
-CXF=-std=c++1z -Wall -Werror -pedantic
+CXX=gcc
+CXF=-std=c11 -Wall -Werror -pedantic
 
-SRC=$(wildcard *.cc)
-OBJ=${SRC:.cc=.o}
+SRC=$(wildcard *.c)
+OBJ=${SRC:.c=.o}
 BIN=shell
 
 .phony: clean
@@ -18,7 +16,7 @@ BIN=shell
 ${BIN}: ${OBJ}	
 	${CXX} -o $@ $^
 
-%.o: %.cc
+%.o: %.c
 	${CXX} ${CXF} -c -o $@ $<
 
 clean:
