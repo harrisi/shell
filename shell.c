@@ -74,6 +74,7 @@ utf_validate(uint8_t *data)
 uint8_t *
 utf_decompose(uint8_t *data)
 {
+	return NULL;
 }
 
 // Return the next grapheme cluster.
