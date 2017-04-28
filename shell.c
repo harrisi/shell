@@ -88,6 +88,7 @@ utf_next(uint8_t *data)
 size_t
 utf_width(uint8_t *data)
 {
+	return 0;
 }
 
 // TODO: Specify rules for `indent`.
