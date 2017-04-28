@@ -77,17 +77,7 @@ utf_decompose(uint8_t *data)
 	return NULL;
 }
 
-// 1. Break after the start of text.
-// 2. Break before the end of text.
-// 3. Do not break between CR LF.
-// 4. Break after control characters.
-// 5. Break before control characters.
-// 6. Do not break Hangul syllable sequences (L + L|V).
-// 7. Do not break Hangul syllable sequences (V + V|T).
-// 8. Do not break Hangul syllable sequences (T + T).
-// 9. Do not break before extending characters (Any + Extend).
-// 10. Break everywhere else.
-
+// See: http://unicode.org/reports/tr29
 // Return the next grapheme cluster.
 uint8_t *
 utf_next(uint8_t *data)
