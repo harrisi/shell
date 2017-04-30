@@ -7,6 +7,8 @@
 #include <unistd.h>
 #include <sys/wait.h>
 
+#include <libutf8proc/utf8proc.h>
+
 struct buffer
 {
 	size_t size;
